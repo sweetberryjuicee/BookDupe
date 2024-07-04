@@ -19,7 +19,7 @@ public abstract class ClientPlayerEntityMixin {
 
     static {
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < 21845; i++){
+        for (int i = 0; i < 21845; i++) {
             stringBuilder.append((char) 2048);
         }
         String str1 = stringBuilder.toString();
@@ -27,19 +27,21 @@ public abstract class ClientPlayerEntityMixin {
         DUPE_BOOK.putSubTag("title", StringTag.of("a"));
         ListTag listTag = new ListTag();
         listTag.addTag(0, StringTag.of(str1));
-        for(int i = 1; i < 40; i++){
+        for (int i = 1; i < 40; i++) {
             listTag.addTag(i, StringTag.of("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
         }
         DUPE_BOOK.putSubTag("pages", listTag);
     }
 
     @Inject(at = @At("HEAD"), method = "sendChatMessage", cancellable = true)
-    public void onChatMessage(String message, CallbackInfo ci){
-        if(message.equals(".d") || message.equals(".s")) {
+    public void onChatMessage(String message, CallbackInfo ci) {
+        if (message.equals(".d") || message.equals(".s")) {
             ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
             if (player.inventory.getMainHandStack().getItem() == Items.WRITABLE_BOOK) {
                 player.networkHandler.sendPacket(new BookUpdateC2SPacket(DUPE_BOOK, true, player.inventory.selectedSlot));
-                if (message.equals(".s")) player.networkHandler.sendPacket(new ClickSlotC2SPacket(player.currentScreenHandler.syncId, 36 + player.inventory.selectedSlot, 0, SlotActionType.THROW, DUPE_BOOK, player.currentScreenHandler.getNextActionId(player.inventory)));
+                if (message.equals(".s")) {
+                    player.networkHandler.sendPacket(new ClickSlotC2SPacket(player.currentScreenHandler.syncId, 36 + player.inventory.selectedSlot, 0, SlotActionType.THROW, DUPE_BOOK, player.currentScreenHandler.getNextActionId(player.inventory)));
+                }
             }
             ci.cancel();
         }
